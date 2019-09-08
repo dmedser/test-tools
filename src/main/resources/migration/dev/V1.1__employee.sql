@@ -1,0 +1,1 @@
+INSERT INTO employee (id, name, age) VALUES ('91189422-02ff-46d2-bec6-5b554f8eec9c', 'Tony', 30);
