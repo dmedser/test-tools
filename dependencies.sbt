@@ -21,7 +21,7 @@ libraryDependencies ++= {
     meowMTL,
     scalaTest,
     scalaCheck,
-    scalazDerivingScalaCheck,
+    scalaCheckMagnolia,
     testContainers,
     testContainersPostgreSql
   ).map(_ % Test)

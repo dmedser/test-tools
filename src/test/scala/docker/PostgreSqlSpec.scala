@@ -15,14 +15,19 @@ class PostgreSqlSpec extends IOSpec with ForAllTestContainer {
 
   "Inside PostgreSQL container" - {
     "check if employee exists by employeeId" in runtTestF {
-      import container._
       for {
-        flywayConfig       <- FlywayConfig.load[F]
-        migrateDb          <- MigrateDb.create[F](jdbcUrl, username, password, flywayConfig.locations)
-        _                  <- migrateDb.migrate
-        transact           <- FromDriverManagerTransactor[F](driverClassName, jdbcUrl, username, password).map(_.trans)
+        flywayConfig <- FlywayConfig.load[F]
+        migrateDb <- MigrateDb
+          .create[F](container.jdbcUrl, container.username, container.password, flywayConfig.locations)
+        _ <- migrateDb.migrate
+        transact <- FromDriverManagerTransactor.create[F](
+          container.driverClassName,
+          container.jdbcUrl,
+          container.username,
+          container.password
+        ).map(_.trans)
         employeeRepository <- EmployeeRepository.create[F]
-        result             <- transact(employeeRepository.employeeExists(Employee.Id(UUID.randomUUID())))
+        result             <- transact(employeeRepository.checkIfEmployeeExists(Employee.Id(UUID.randomUUID())))
       } yield result mustBe false
     }
   }
